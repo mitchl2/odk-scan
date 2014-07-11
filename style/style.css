@@ -97,9 +97,10 @@ a {
 
 /* A div container for the ODK Scan doc. */
 .scan_page {
-	border-style: solid;
+	/*border-style: solid;
 	border-color: black;
-	border-width: 0.1rem;
+	border-width: 0.1rem;*/
+	border: none;
 	background-color: white;
 	float: left;
 	margin-left: 15px;
@@ -270,7 +271,7 @@ input[type=text], input[type=number] {
 *
 *  NOTE: Border style, weight, and width are set separately 
 *  because there's a bug in the way that Chrome renders 
-*  an objects border with the rem unit when setting the border
+*  an objects border with the  unit when setting the border
 *  using only the 'border' attribute.
 ************************************************************/
 .field {

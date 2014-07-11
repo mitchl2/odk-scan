@@ -62,7 +62,7 @@ var crop_image = function(image) {
 	/*	NOTE: html2canvas requires the DOM elements be loaded into
 		the canvas in order to work correctly, so the image is loaded
 		into the processed_images div.
-	*/
+	*/	
 	$("#processed_images").append($img_container);
 	return $img_container;
 };
@@ -123,7 +123,7 @@ var image_to_field = function(image, json_zIndex) {
 	$img_draggable.draggable({containment: 'parent', 
 							grid: [GRID_X, GRID_Y]});
 	$img_draggable.resizable({containment: 'parent', 
-		aspectRatio: true, handles: 'all'});	
+		aspectRatio: true, handles: 'all'});
 	
 	// convert units to REM on resize/drag stop
 	$img_draggable.on('resizestop', function(event, ui) {		
@@ -134,7 +134,7 @@ var image_to_field = function(image, json_zIndex) {
 		$(this).css("width", rem(width));
 		$(this).css("height", rem(height));
 		adjust_image_position($(this), ui);
-	});	
+	});
 	
 	$img_draggable.on("dragstop", function() {
 		convert_position($(this));
