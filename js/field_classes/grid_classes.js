@@ -243,7 +243,7 @@ GridField.prototype.addEventHandlers = function($grid) {
 		$(".highlighted_group").removeClass("highlighted_group");
 	
 		// check if user pressed control during the click
-		if (event.ctrlKey) {
+		if (event.shiftKey) {  // has changed before it was ctrlKey
 			ODKScan.FieldContainer.pushObject(ODKScan.DefaultPropView);
 		
 			// add this field to the set of group fields
@@ -322,8 +322,19 @@ GridField.prototype.getFieldJSON = function() {
 	f_info.segments = [];
 
 	var seg = {};
-	seg.segment_x = this.$grid_div.position().left;
-	seg.segment_y = this.$grid_div.position().top;
+	//this.$grid_div.position().left;
+	//this.$grid_div.position().top;
+	//added, very left from entire page - scan page
+	if(this.field_type == "bubble") {
+		seg.segment_x = ($('.field.bubble_div').offset().left) - ($('.scan_page').offset().left);
+	    seg.segment_y = ($('.field.bubble_div').offset().top) - ($('.scan_page').offset().top);
+	} else if (this.field_type == "int") {
+		seg.segment_x = ($('.field.num_div').offset().left) - ($('.scan_page').offset().left);
+		seg.segment_y = ($('.field.num_div').offset().top) - ($('.scan_page').offset().top);
+	} else {
+		seg.segment_x = ($('.field.cb_div').offset().left) - ($('.scan_page').offset().left);
+		seg.segment_y = ($('.field.cb_div').offset().top) - ($('.scan_page').offset().top);
+	}
 	seg.segment_width = this.$grid_div.outerWidth();
 	seg.segment_height = this.$grid_div.outerHeight();
 	seg.align_segment = false;
@@ -443,6 +454,8 @@ function CheckboxField(json_init, update_init) {
 			grid_values.push($(this).val());
 		});
 		this.grid_values = grid_values;
+		// checking whether there is a duplicate value or not
+		is_value_valid(this.grid_values);
 	}
 }
 
@@ -544,6 +557,8 @@ function BubbleField(json_init, update_init) {
 			grid_values.push($(this).val());
 		});
 		this.grid_values = grid_values;
+		// checking whether there is a duplicate value or not
+		is_value_valid(this.grid_values);
 	}
 }
 

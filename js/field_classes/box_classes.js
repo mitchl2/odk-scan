@@ -25,6 +25,9 @@ function Box(json_init, update_init) {
 		this.name = json_init.name;
 		this.label = json_init.label;
 		this.verify = json_init.verify; //changing it before it was field_priority
+		console.log("actual left "+this.$box.position().left);
+		console.log("actual top "+this.$box.position().top);
+
 	} else {	
 		if (update_init) {
 			// invoked from Update Field button
@@ -89,7 +92,7 @@ Box.prototype.addEventHandlers = function($box) {
 		$(".highlighted_group").removeClass("highlighted_group");
 	
 		// check if user pressed control during the click
-		if (event.ctrlKey) {
+		if (event.shiftKey) {  // has changed, before it was ctrlKey
 			ODKScan.FieldContainer.pushObject(ODKScan.DefaultPropView);
 		
 			// add this field to the set of group fields
@@ -111,7 +114,9 @@ Box.prototype.addEventHandlers = function($box) {
 				ODKScan.FieldContainer.pushObject(ODKScan.TextBoxView);
 			} else if (obj.field_type == "string") {  // before it was empty_box
 				ODKScan.FieldContainer.pushObject(ODKScan.EmptyBoxView);
-			} else {
+			} else if (obj.field_type == "qr_code") {
+                 ODKScan.FieldContainer.pushObject(ODKScan.QrCodeView);
+			}else {
 				console.log("error - unsupported field type");
 			}		
 		}
@@ -161,8 +166,10 @@ Box.prototype.getFieldJSON = function() {
 	f_info.segments = [];
 
 	var seg = {};
-	seg.segment_x = this.$box.position().left;
-	seg.segment_y = this.$box.position().top;
+	// very left of the entire page - scan page
+	seg.segment_x = ($('.field.box').offset().left) - ($('.scan_page').offset().left);
+	seg.segment_y = ($('.field.box').offset().top) - ($('.scan_page').offset().top);
+	
 	seg.segment_width = this.$box.outerWidth();
 	seg.segment_height = this.$box.outerHeight();
 	
@@ -177,7 +184,9 @@ Box.prototype.getFieldJSON = function() {
 Box.prototype.getProperties = function() {
 	var json = {};
 	json.left = this.$box.css('left');
+	//console.log("left: "+this.$box.css('left'));
 	json.top = this.$box.css('top');
+	//console.log("top: "+this.$box.css('top'));
 	json.box_width = this.$box.css('width');
 	json.box_height = this.$box.css('height');
 	json.border_width = this.border_width;	
@@ -289,6 +298,43 @@ EmptyBox.prototype.saveJSON = function() {
 	return this.getProperties();
 }
 
+/*	Represents a qr code box field.
+	json_init: JSON 	// initialization values that come from a JSON file
+	update_init: JSON 	// initialization values that come from updating the field
+*/
+function QrCode(json_init, update_init) {
+	Box.call(this, json_init, update_init); // call super constructor.	
+	this.field_type = 'qr_code';// before it was empty_box
+	this.type = "qrcode";										
+}
+
+// subclass extends superclass
+QrCode.prototype = Object.create(Box.prototype);
+QrCode.prototype.constructor = QrCode;
+
+/* 	Loads the properties of the qr code box into 
+	the properties toolbar.
+*/
+QrCode.prototype.loadProperties = function() {
+	// load properties that are common to all Box fields
+	this.loadBoxProp();
+}
+
+/*	Creates a new qr code box field with the updated
+	properties listed in the properties sidebar.
+*/
+QrCode.prototype.updateProperties = function() {
+	var qr_code = new QrCode(null, this.getProperties());
+	qr_code.constructBox();	
+}
+
+/*	Returns JSON containing DOM properties
+	of this qr code box, formatted for saving 
+	the document.
+*/
+QrCode.prototype.saveJSON = function() {
+	return this.getProperties();
+}
 /*	Represents a text box field.
 	json_init: JSON 	// initialization values that come from a JSON file
 	update_init: JSON 	// initialization values that come from updating the field
