@@ -300,8 +300,8 @@ FormField.prototype.getFieldJSON = function() {
 
 	var seg = {};
 	// from very left of the page - scan page
-    seg.segment_x = ($('.field.form_num_div').offset().left) - ($('.scan_page').offset().left);
-	seg.segment_y = ($('.field.form_num_div').offset().top) - ($('.scan_page').offset().top);
+    seg.segment_x = (this.$grid_div.offset().left) - ($('.scan_page').offset().left);
+	seg.segment_y = (this.$grid_div.offset().top) - ($('.scan_page').offset().top);
 	
 	seg.segment_width = this.$grid_div.outerWidth();
 	seg.segment_height = this.$grid_div.outerHeight();
@@ -367,7 +367,7 @@ function FormNumField(json_init, update_init) {
 	this.field_type = 'form_num';
 	
 	// set the grid class
-	this.grid_class = 'form_num_div';
+	this.grid_class = 'num_div';
 	
 	// TODO: find out what these values should actually be
 	this.type = 'string';		
